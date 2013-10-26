@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Fall Down</title>
+<script type="text/javascript">
+	//Gloabal Variables
+	var count = 1 //number of times through the loop
+	var ballX = 300; //Starting X position
+	var ballY = 100;  //Starting Y position
+	var ballDx = 0;  //Left right movement
+	var ballDy = -0.5;
+	var fallDownSpeed = 1;  //Speed the screen moves down
+	var topSpeed = 8;
+	var acceleration = 2;  //left right movement speed
+	var friction = 0;
+	var boardX = 600;  //game board width
+	var boardY = 600;  //game board height
+	var key;
+	var canvas;  
+	var context; 
+	var gameLoop;
+	
+	//called onload to start the game
+	function drawGameCanvas() {
+		
+		//get canvas element
+		canvas = document.getElementById('falldown');
+		
+		//get canvas context
+		if (canvas.getContext) {
+			context = canvas.getContext('2d');
+		
+			// play the game until you lose
+			gameLoop = setInterval(drawBall, 16);
+			
+
+			
+		};		
+	};
+	
+	function drawBall(){
+		//this is the main game loop function is runs every 16ms as set in the interval is gameLoop
+		var lineArray = []; //set the potential line to empty array;
+		
+		//clear the board
+		context.clearRect(0, 0, boardX, boardY);
+		
+		//Fill the board
+		context.fillStyle = "lightGrey";
+		context.beginPath();
+		context.rect(0, 0, boardX, boardY);
+		context.closePath();
+		context.fill();
+		
+		
+		//Change the ball location left and right
+			
+		////with acceleration
+		///movement = moveBallHorizontally (ballX, ballDx, friction);
+		//ballX = movement[0];
+		//ballDx = movement[1];
+		
+		//without acceleration
+		//see is a key is pressed
+		window.addEventListener('keydown', whatKey, false)
+		
+		//if ball is inside the screen
+		if (ballX > 0 && ballX < boardX) {
+			//if it was left
+			if (key == 'left') {
+				ballX = ballX - acceleration;
+			//if it was right
+			} else if (key == 'right'){
+				ballX = ballX + acceleration;
+			};
+		} else if (ballX <= 0) {
+				ballX=acceleration;
+				}
+		else if  (ballX >= boardX) {
+			ballX = boardX-acceleration;
+			};	
+			
+		//Change the ball location up and down
+		//if the ball is not touching a line
+		//then 
+		ballY = ballY-ballDy;
+		//else ballY = ballY + fallDownSpeed
+		
+		//Draw a ball
+		context.fillStyle = "black";
+		context.beginPath();
+		context.arc(ballX, ballY, 5, 0, Math.PI * 2, true);
+		context.closePath();
+		context.fill();
+	
+	
+		count = count + 1
+		};//end drawBall function
+		
+		
+	function whatKey(evt) {
+		//adjusts the balls dX based on key input and 
+		//takes into account acceleration and friction
+		
+		switch (evt.keyCode) {
+			// Left arrow.
+			case 37:
+			//set global variable key to left
+				key = 'left'
+				break;
+				
+			// Right arrow
+			case 39:
+			//set global variable key to right
+				key = 'right'
+				break;
+				
+			};
+		};
+		
+	//function moveBallHorizontally (x, dx, f) {
+	//helper function to move the ball horizontally
+	//the ball should slow down from friction unless
+	//the user has increased the Dx by pressing left or right
+	//and the ball should not leave the game board
+	
+		//if the ball is still in the game board
+		//if (x > 0 && x < boardX ) {
+			//then if the ball is moving left
+		//	if (dx < 0) {
+				//change the X based on the Dx and friction
+		//		x = x + dx + f;
+		//		} else if (dx > 0 ) {
+				//the ball is moving right
+		//		x = x + dx - f;
+		//		};
+	//	} else { 
+	//		//the ball hit a wall so reverse direction
+	//		dx = -dx
+	//		x = x + dx
+	//		};
+	//	return [ x, dx ];
+	//};
+		
+
+	//create an object literal that has function to create and add new lines
+	function createLine() { 
+	 var line;
+	for (var i=0; i<20; i++){
+		random = Math.random()
+		//create a array with 1 and 0's 0's will be holes  1's line
+		if (random < 0.85) {
+			line.push(1);
+			}else {
+			line.push(0);
+			};
+		};
+		return line
+		};
+	
+	
+
+		
+
+			
+</script>
+</head>
+<body onload="drawGameCanvas()">
+<canvas id="falldown" width="600" height="600">
+Your browser is too old, get a new one
+</canvas>
+
+</body>
+</html>
