@@ -18,7 +18,7 @@ function newGame () {
     line.makeLine();
     var key; //for the which key was pressed
     var acceleration = 6; //the speed the ball changes
-    var fallDownSpeed = 0.25
+    var fallDownSpeed = 1;
     var count = 0;
     var gameOver = false;
 
@@ -107,13 +107,19 @@ function newGame () {
                 };
 
             //change the y position of the ball
-            if (ball.y >= line.y - 7 ) {
+
+            ///if the ball it touching the line
+            if (ball.y > line.y - 7 && ball.y < line.y + 7) {
+
+                //if the ball is inbetween the hole
                 if ((line.hole > ball.x) && (ball.x > line.hole - line.space)) {
                     ball.y = ball.y + fallDownSpeed;
                 }
-            } else {
+              /// otherwise your good
+            }else {
                 ball.y = ball.y + fallDownSpeed;
             }
+
 
             ///draw everything
             board.draw(board.width, board.height);
