@@ -53,10 +53,31 @@ function newGame () {
     }
 
     function Line() {
-        this.y = 350;
-        this.line = [];
+        this.y = 600;
+        this.line = []; //empty line array waiting for a line to be made
+        this.makeLine = function () {
+            //sets variables within the line called on object creation
+            var randomHole = Math.round(Math.random()*600);
+            this.line = [randomHole-this.space, randomHole];
+            this.hole = randomHole
+        }
         this.hole = null;
-        this.space = 200;
+        this.space = 40;
+        this.makeLine(); //make the line
+        this.isBallOnLine = function() {
+            if (ball.y < this.y + 7 && ball.y ) {
+                return true
+            } else {
+                return false
+            }
+        }
+        this.isBallOverHole= function (){
+            if ((line.hole > ball.x) && (ball.x > line.hole - line.space)){
+                return true
+            } else {
+                return false
+            }
+        }
         this.draw = function () {
             context.beginPath();
             context.moveTo(0,this.y);
@@ -73,11 +94,7 @@ function newGame () {
             context.stroke();
         };
 
-        this.makeLine = function () {
-            var randomHole = Math.round(Math.random()*600);
-            this.line = [randomHole-this.space, randomHole];
-            this.hole = randomHole
-        }
+
     }
 
     function animate() {
@@ -108,29 +125,36 @@ function newGame () {
 
             //change the y position of the ball
             //need to check every line on the way
-
-
-
-            ///if the ball is touching the line
-            if (ball.y > line.y - 7 && ball.y < line.y + 7) {
-
-                //if the ball is inbetween the hole
-                if ((line.hole > ball.x) && (ball.x > line.hole - line.space)) {
-                    ball.y = ball.y + fallDownSpeed;
-                } else {
-                    ball.y = ball.y - lineUpSpeed;
+            for (var i = 0;i<lines.length+1;i++){
+               /// if the ball wasn't moved at all
+                 if (i==lines.length){
+                    ball.y = ball.y + fallDownSpeed
+                     break
                 }
-              /// otherwise your good
-            }else {
-                ball.y = ball.y + fallDownSpeed;
+                line = lines[i];
+                ///if the ball is on top of the line
+                if (line.isBallOnLine()) {
+                    //then if the ball is between the hole
+                    if (line.isBallOverHole()) {
+                        ball.y = ball.y + fallDownSpeed;
+                        break;
+                    } else {
+                        ball.y = ball.y - lineUpSpeed;
+                        break;
+                    }
+                }
             }
 
-            //change the position of the line
-            line.y -= lineUpSpeed;
+            //change the position of the all the lines
+            //I put it in a seperate for loop
+            for (var i = 0;i<lines.length;i++){
+                line = lines[i];
+                line.y -= lineUpSpeed;
+            }
 
 
             //add new lines depending on count
-            if (count % 500 == 0){
+            if (count % 100 == 0 && count != 0){
                 lines.push(new Line())
             }
 
@@ -139,8 +163,7 @@ function newGame () {
             board.draw(board.width, board.height);
 
             /// then the lines
-            for (var i = 0; lines.length; i++) {
-                lines[i].makeLine();
+            for (var i = 0; i<lines.length; i++) {
                 lines[i].draw();
             }
 
@@ -148,7 +171,7 @@ function newGame () {
             ball.draw(ball.x, ball.y);
 
 
-            count += 1;
+            count = count + 1;
 
         }
 
