@@ -108,7 +108,7 @@ function newGame () {
 
             //change the y position of the ball
             //need to check every line on the way
-            for var line
+
 
 
             ///if the ball is touching the line
