@@ -14,11 +14,11 @@ function newGame () {
     var context = canvas.getContext( '2d' );
     var ball = new Ball();
     var board = new Board();
-    var line = new Line();
-    line.makeLine();
+    var lines = [new Line()];
     var key; //for the which key was pressed
     var acceleration = 6; //the speed the ball changes
     var fallDownSpeed = 1;
+    var lineUpSpeed= 1;
     var count = 0;
     var gameOver = false;
 
@@ -100,31 +100,54 @@ function newGame () {
                     ball.x = ball.x + acceleration;
                 };
                 } else if (ball.x <= 0) {
-                ball.x=acceleration;
+                    ball.x=acceleration;
                 }
                 else if  (ball.x >= board.width) {
-                ball.x = board.width-acceleration;
+                    ball.x = board.width-acceleration;
                 };
 
             //change the y position of the ball
+            //need to check every line on the way
+            for var line
 
-            ///if the ball it touching the line
+
+            ///if the ball is touching the line
             if (ball.y > line.y - 7 && ball.y < line.y + 7) {
 
                 //if the ball is inbetween the hole
                 if ((line.hole > ball.x) && (ball.x > line.hole - line.space)) {
                     ball.y = ball.y + fallDownSpeed;
+                } else {
+                    ball.y = ball.y - lineUpSpeed;
                 }
               /// otherwise your good
             }else {
                 ball.y = ball.y + fallDownSpeed;
             }
 
+            //change the position of the line
+            line.y -= lineUpSpeed;
 
-            ///draw everything
+
+            //add new lines depending on count
+            if (count % 500 == 0){
+                lines.push(new Line())
+            }
+
+
+            ///draw the board first
             board.draw(board.width, board.height);
-            line.draw();
+
+            /// then the lines
+            for (var i = 0; lines.length; i++) {
+                lines[i].makeLine();
+                lines[i].draw();
+            }
+
+            //and the ball
             ball.draw(ball.x, ball.y);
+
+
             count += 1;
 
         }
