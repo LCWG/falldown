@@ -1,4 +1,12 @@
-    window.requestAnimFrame = (function(callback) {
+///A simple ball game written in javascript
+///try not to touch the top of the screen, see how many levels you can get to
+
+///global level varaible that is set on page load
+    var level=1;
+    var win = false;
+
+
+window.requestAnimFrame = (function(callback) {
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame  ||
         window.mozRequestAnimationFrame     ||
@@ -21,11 +29,38 @@ function newGame () {
     var lineUpSpeed= 1;
     var newLineCreation = 100;
     var count = 1;
+    var speed = 500 +(300 * level);
     var gameOver = false;
-
+    var win = false;
 
     //start the loop
     animate();
+
+    function animate() {
+        if (!gameOver) {
+            requestAnimFrame( animate );
+            draw();
+        } else {
+            //// update the scoreboard
+            alert("GAME OVER!! Your Score was:" + count)
+            var score=document.createElement("LI");
+            var scoreText=document.createTextNode('Score: ' + count);
+            score.appendChild(scoreText);
+            document.getElementById('scoreboard').appendChild(score);
+
+            ///change the level up or down depending on win
+            level = (win) ? level + 1 : level - 1
+
+            /// print the level
+            var div=document.createElement("DIV");
+            var levelText=document.createTextNode('Score: ' + level);
+            level.appendChild(levelText);
+            document.getElementById('level').appendChild(level);
+
+
+
+        }
+    }
 
 
     ///my Objects
@@ -67,7 +102,7 @@ function newGame () {
         this.space = 40;
         this.makeLine(); //make the line
         this.isBallOnLine = function() {
-            if ((ball.y -7 < this.y) && (ball.y + 7 > this.y)) {
+            if ((ball.y -1 < this.y) && (ball.y + 7 > this.y)) {
                 return true
             } else {
                 return false
@@ -99,31 +134,24 @@ function newGame () {
 
     }
 
-    function animate() {
-        if (!gameOver) {
-            requestAnimFrame( animate );
-            draw();
-        } else {
-            alert("GAME OVER!! Your Score was:" + count)
-        }
-    }
+
 
         function draw() {
-            //change the x position  of the ball according to key press
-            if (ball.x > 0 && ball.x < board.width) {
-            //if it was left
-                if (key == 'Left') {
-                    ball.x = ball.x - acceleration;
-                    //if it was right
-                } else if (key == 'Right'){
-                    ball.x = ball.x + acceleration;
-                };
-                } else if (ball.x <= 0) {
-                    ball.x=acceleration;
-                }
-                else if  (ball.x >= board.width) {
-                    ball.x = board.width-acceleration;
-                };
+//            //change the x position  of the ball according to key press
+//            if (ball.x > 0 && ball.x < board.width) {
+//            //if it was left
+//                if (key == 'Left') {
+//                    ball.x = ball.x - acceleration;
+//                    //if it was right
+//                } else if (key == 'Right'){
+//                    ball.x = ball.x + acceleration;
+//                };
+//                } else if (ball.x <= 0) {
+//                    ball.x=acceleration;
+//                }
+//                else if  (ball.x >= board.width) {
+//                    ball.x = board.width-acceleration;
+//                };
 
             //change the y position of the ball
             //need to check every line on the way
@@ -175,15 +203,16 @@ function newGame () {
             //and the ball
             ball.draw(ball.x, ball.y);
 
-            //increase the speed of the game
-            if (count%100 == 0){
-                fallDownSpeed = fallDownSpeed*1.1
-                lineUpSpeed = lineUpSpeed*1.1
-                acceleration = acceleration*1.1
+            //increase the speed of the game as long as you haven't beaten the level
+            if (count%100 == 0 && count < speed){
+                fallDownSpeed = lineUpSpeed = fallDownSpeed*1.15
+               // acceleration = acceleration*1.1  this was for the keyboard press
                 newLineCreation = Math.round(newLineCreation*0.9)
+            } else if (count%100 == 0) {
+                fallDownSpeed = lineUpSpeed = fallDownSpeed*1.1;
+                newLineCreation = Math.round(newLineCreation*0.9)
+                win = true;
             }
-
-
 
             count = count + 1;
 
@@ -194,16 +223,15 @@ function newGame () {
         }
 
 
-    ///jquery respods to the keypress
-    jQuery(document).keypress(function(e){
+    ///resond to mousemove
+    document.addEventListener('mousemove', function (e) {
+        if (e.pageX > 0) {
+            if (e.pageX < 600) {
+                ball.x = e.pageX
+            }else {
+                ball.x = 600}
+        }else {
+            ball.x = 0}
 
-        key = e.key
-        return key
-
-        });
-
-
+    }, false);
 }
-
-
-newGame();
