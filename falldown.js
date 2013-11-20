@@ -19,7 +19,8 @@ function newGame () {
     var acceleration = 6; //the speed the ball changes
     var fallDownSpeed = 1;
     var lineUpSpeed= 1;
-    var count = 0;
+    var newLineCreation = 100;
+    var count = 1;
     var gameOver = false;
 
 
@@ -52,6 +53,7 @@ function newGame () {
         }
     }
 
+
     function Line() {
         this.y = 600;
         this.line = []; //empty line array waiting for a line to be made
@@ -65,13 +67,13 @@ function newGame () {
         this.space = 40;
         this.makeLine(); //make the line
         this.isBallOnLine = function() {
-            if (ball.y < this.y + 7 && ball.y ) {
+            if ((ball.y -7 < this.y) && (ball.y + 7 > this.y)) {
                 return true
             } else {
                 return false
             }
         }
-        this.isBallOverHole= function (){
+        this.isBallOverHole= function () {
             if ((line.hole > ball.x) && (ball.x > line.hole - line.space)){
                 return true
             } else {
@@ -102,7 +104,7 @@ function newGame () {
             requestAnimFrame( animate );
             draw();
         } else {
-            newGame();
+            alert("GAME OVER!! Your Score was:" + count)
         }
     }
 
@@ -129,13 +131,13 @@ function newGame () {
                /// if the ball wasn't moved at all
                  if (i==lines.length){
                     ball.y = ball.y + fallDownSpeed
-                     break
+                    break;
                 }
                 line = lines[i];
                 ///if the ball is on top of the line
-                if (line.isBallOnLine()) {
+                if (line.isBallOnLine() ) {
                     //then if the ball is between the hole
-                    if (line.isBallOverHole()) {
+                    if (line.isBallOverHole() ) {
                         ball.y = ball.y + fallDownSpeed;
                         break;
                     } else {
@@ -143,6 +145,9 @@ function newGame () {
                         break;
                     }
                 }
+            }
+            if (ball.y > 600) {
+                ball.y =600
             }
 
             //change the position of the all the lines
@@ -154,7 +159,7 @@ function newGame () {
 
 
             //add new lines depending on count
-            if (count % 100 == 0 && count != 0){
+            if (count % newLineCreation == 0){
                 lines.push(new Line())
             }
 
@@ -170,8 +175,21 @@ function newGame () {
             //and the ball
             ball.draw(ball.x, ball.y);
 
+            //increase the speed of the game
+            if (count%100 == 0){
+                fallDownSpeed = fallDownSpeed*1.1
+                lineUpSpeed = lineUpSpeed*1.1
+                acceleration = acceleration*1.1
+                newLineCreation = Math.round(newLineCreation*0.9)
+            }
+
+
 
             count = count + 1;
+
+            if (ball.y <=0)   {
+                gameOver = true
+            }
 
         }
 
@@ -183,6 +201,7 @@ function newGame () {
         return key
 
         });
+
 
 }
 
