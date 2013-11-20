@@ -52,10 +52,12 @@ function newGame () {
             level = (win) ? level + 1 : level - 1
 
             /// print the level
+            levelDiv = document.getElementById('level')
             var div=document.createElement("DIV");
-            var levelText=document.createTextNode('Score: ' + level);
-            level.appendChild(levelText);
-            document.getElementById('level').appendChild(level);
+            var levelText=document.createTextNode('Level: ' + level);
+            levelDiv.removeChild(levelDiv.childNodes[0]);
+            div.appendChild(levelText);
+            levelDiv.appendChild(div);
 
 
 
